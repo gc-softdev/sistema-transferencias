@@ -1,0 +1,208 @@
+<div class="max-w-7xl mx-auto p-6">
+  <div class="bg-white rounded-lg shadow-lg">
+    <!-- Cabeçalho -->
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold text-gray-800">Extrato de Transferências</h2>
+        <div class="flex gap-2">
+          <button
+            (click)="carregarTransferencias()"
+            [disabled]="loading"
+            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 transition-colors">
+            <span *ngIf="loading">Carregando...</span>
+            <span *ngIf="!loading">Atualizar</span>
+          </button>
+          <button
+            (click)="exportarCSV()"
+            [disabled]="transferencias.length === 0"
+            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 transition-colors">
+            Exportar CSV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Conta de Origem</label>
+          <input
+            type="text"
+            [(ngModel)]="filtroContaOrigem"
+            (input)="aplicarFiltros()"
+            placeholder="Digite a conta"
+            maxlength="10"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Data Início</label>
+          <input
+            type="date"
+            [(ngModel)]="filtroDataInicio"
+            (change)="aplicarFiltros()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Data Fim</label>
+          <input
+            type="date"
+            [(ngModel)]="filtroDataFim"
+            (change)="aplicarFiltros()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div class="flex items-end">
+          <button
+            (click)="limparFiltros()"
+            class="w-full px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
+            Limpar Filtros
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensagem de Erro -->
+    <div *ngIf="erro" class="mx-6 mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+      <div class="flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+        </svg>
+        <span>{{ erro }}</span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="flex justify-center items-center py-12">
+      <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span class="ml-2 text-gray-600">Carregando transferências...</span>
+    </div>
+
+    <!-- Tabela -->
+    <div *ngIf="!loading && transferencias.length > 0" class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th 
+              (click)="ordenarPor('id')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              ID {{ obterIconeOrdenacao('id') }}
+            </th>
+            <th 
+              (click)="ordenarPor('contaOrigem')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Conta Origem {{ obterIconeOrdenacao('contaOrigem') }}
+            </th>
+            <th 
+              (click)="ordenarPor('contaDestino')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Conta Destino {{ obterIconeOrdenacao('contaDestino') }}
+            </th>
+            <th 
+              (click)="ordenarPor('valorTransferencia')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Valor {{ obterIconeOrdenacao('valorTransferencia') }}
+            </th>
+            <th 
+              (click)="ordenarPor('taxaTransferencia')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Taxa {{ obterIconeOrdenacao('taxaTransferencia') }}
+            </th>
+            <th 
+              (click)="ordenarPor('dataAgendamento')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Data Agendamento {{ obterIconeOrdenacao('dataAgendamento') }}
+            </th>
+            <th 
+              (click)="ordenarPor('dataTransferencia')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Data Transferência {{ obterIconeOrdenacao('dataTransferencia') }}
+            </th>
+            <th 
+              (click)="ordenarPor('diasParaTransferencia')"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100">
+              Dias {{ obterIconeOrdenacao('diasParaTransferencia') }}
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr 
+            *ngFor="let transferencia of transferencias; trackBy: trackByTransferenciaId"
+            [class]="obterCorLinhaPorStatus(transferencia.dataTransferencia)"
+            class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              #{{ transferencia.id }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">
+              {{ transferencia.contaOrigem }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">
+              {{ transferencia.contaDestino }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
+              {{ formatarMoeda(transferencia.valorTransferencia) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ formatarMoeda(transferencia.taxaTransferencia) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ formatarData(transferencia.dataAgendamento) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              {{ formatarData(transferencia.dataTransferencia) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
+              {{ transferencia.diasParaTransferencia }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span 
+                [class]="obterStatusTransferencia(transferencia.dataTransferencia).classe"
+                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                {{ obterStatusTransferencia(transferencia.dataTransferencia).texto }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mensagem quando não há transferências -->
+    <div *ngIf="!loading && transferencias.length === 0 && !erro" class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">Nenhuma transferência encontrada</h3>
+      <p class="mt-1 text-sm text-gray-500">
+        {{ filtroContaOrigem || filtroDataInicio || filtroDataFim ? 'Tente ajustar os filtros ou' : '' }}
+        Comece agendando uma nova transferência.
+      </p>
+    </div>
+
+    <!-- Resumo -->
+    <div *ngIf="!loading && transferencias.length > 0" class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+        <div class="text-center">
+          <span class="text-gray-600">Total de Transferências:</span>
+          <span class="ml-2 font-semibold text-gray-900">{{ transferencias.length }}</span>
+        </div>
+        <div class="text-center">
+          <span class="text-gray-600">Valor Total:</span>
+          <span class="ml-2 font-semibold text-green-600">{{ formatarMoeda(calcularTotalTransferencias()) }}</span>
+        </div>
+        <div class="text-center">
+          <span class="text-gray-600">Total de Taxas:</span>
+          <span class="ml-2 font-semibold text-red-600">{{ formatarMoeda(calcularTotalTaxas()) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

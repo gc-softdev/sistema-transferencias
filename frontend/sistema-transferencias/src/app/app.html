@@ -1,0 +1,71 @@
+<div class="min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center">
+          <svg class="w-8 h-8 text-blue-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+          </svg>
+          <h1 class="text-2xl font-bold text-gray-900">{{ title }}</h1>
+        </div>
+        <div class="text-sm text-gray-500">
+          Versão 1.0.0
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex space-x-8">
+        <button
+          (click)="selecionarAba('agendamento')"
+          [class.border-blue-500]="abaSelecionada === 'agendamento'"
+          [class.text-blue-600]="abaSelecionada === 'agendamento'"
+          [class.border-transparent]="abaSelecionada !== 'agendamento'"
+          [class.text-gray-500]="abaSelecionada !== 'agendamento'"
+          class="py-4 px-1 border-b-2 font-medium text-sm hover:text-gray-700 hover:border-gray-300 transition-colors">
+          <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          Agendar Transferência
+        </button>
+        <button
+          (click)="selecionarAba('extrato')"
+          [class.border-blue-500]="abaSelecionada === 'extrato'"
+          [class.text-blue-600]="abaSelecionada === 'extrato'"
+          [class.border-transparent]="abaSelecionada !== 'extrato'"
+          [class.text-gray-500]="abaSelecionada !== 'extrato'"
+          class="py-4 px-1 border-b-2 font-medium text-sm hover:text-gray-700 hover:border-gray-300 transition-colors">
+          <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Extrato
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="py-8">
+    <div *ngIf="abaSelecionada === 'agendamento'">
+      <app-agendamento></app-agendamento>
+    </div>
+    <div *ngIf="abaSelecionada === 'extrato'">
+      <app-extrato></app-extrato>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-12">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <div class="text-center text-sm text-gray-500">
+        <p>&copy; 2025 Sistema de Transferências.</p>
+        <p class="mt-1">Desenvolvido por Gabriel Cardoso.</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
