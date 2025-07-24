@@ -1,0 +1,65 @@
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Java (Maven)
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Angular
+node_modules/
+dist/
+.angular/
+*.log
+npm-debug.log
+yarn-error.log
+coverage/
+e2e/*.js
+e2e/*.map
+src/environments/environment.*.ts
+!src/environments/environment.ts
+!src/environments/environment.prod.ts
+
+# Tailwind CSS
+public/build/
+dist/css/
+dist/js/
+*.css.map
+
+# Logs e arquivos temporários
+*.log
+*.log.*
+logs/
+*.tmp
+temp/
+tmp/
+
+# Configurações do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de configuração local
+*.local
+application-*.properties
+application-*.yml
+application-*.yaml
+
+# Outros arquivos desnecessários
+*.bak
+*.swp
+*.swo
+*~
